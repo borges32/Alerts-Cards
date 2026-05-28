@@ -24,8 +24,11 @@ export const AlertCard: React.FC<Props> = ({
   maxHeight,
   minHeight,
 }) => {
-  const summary = alert.annotations.summary || alert.name;
-  const description = alert.annotations.description || 'Sem descrição disponível.';
+  const hasTemplate = (s?: string) => !!s && s.includes('{{');
+  const rawSummary = alert.annotations.summary;
+  const summary = rawSummary && !hasTemplate(rawSummary) ? rawSummary : alert.name;
+  const rawDescription = alert.annotations.description;
+  const description = rawDescription && !hasTemplate(rawDescription) ? rawDescription : 'Sem descrição disponível.';
   const runbookUrl = alert.annotations.runbook_url || alert.annotations.runbookUrl;
   const severity = alert.labels.severity;
 
@@ -40,9 +43,7 @@ export const AlertCard: React.FC<Props> = ({
           <Tooltip content={description} placement="top">
             <span className={styles.title}>{alert.name}</span>
           </Tooltip>
-          {summary && summary !== alert.name && !summary.includes('{{') && (
-            <span className={styles.summary}>{summary}</span>
-          )}
+          {summary !== alert.name && <span className={styles.summary}>{summary}</span>}
           <div className={styles.meta}>
             <span className={styles.state}>{alert.state.toUpperCase()}</span>
             {severity && <span className={styles.badge}>{severity}</span>}
