@@ -38,8 +38,11 @@ export const AlertCard: React.FC<Props> = ({
       <div className={styles.header}>
         <div className={styles.titleWrap}>
           <Tooltip content={description} placement="top">
-            <span className={styles.title}>{summary}</span>
+            <span className={styles.title}>{alert.name}</span>
           </Tooltip>
+          {summary && summary !== alert.name && !summary.includes('{{') && (
+            <span className={styles.summary}>{summary}</span>
+          )}
           <div className={styles.meta}>
             <span className={styles.state}>{alert.state.toUpperCase()}</span>
             {severity && <span className={styles.badge}>{severity}</span>}
@@ -125,6 +128,17 @@ const getStyles = (color: string, radius: number, compact: boolean, maxHeight: n
     line-height: 1.25;
     color: var(--card-fg, #f0f0f0);
     cursor: help;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  `,
+  summary: css`
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 1.3;
+    color: rgba(255, 255, 255, 0.7);
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;

@@ -72,6 +72,13 @@ export interface PromRulesResponse {
         labels?: Record<string, string>;
         annotations?: Record<string, string>;
         lastEvaluation?: string;
+        alerts?: Array<{
+          state?: string;
+          labels?: Record<string, string>;
+          annotations?: Record<string, string>;
+          activeAt?: string;
+          value?: string;
+        }>;
       }>;
     }>;
   };

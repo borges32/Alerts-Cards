@@ -145,3 +145,38 @@ groups:
         labels:
           severity: info
           team: ecommerce
+
+      - uid: cart-template-vars-test
+        title: Teste de variáveis no summary
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange: { from: 600, to: 0 }
+            datasourceUid: prom-cartalert
+            model:
+              expr: cart_open_total_ratio
+              refId: A
+              instant: true
+          - refId: C
+            relativeTimeRange: { from: 0, to: 0 }
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              refId: C
+              expression: A
+              conditions:
+                - evaluator: { type: gt, params: [10] }
+                  operator: { type: and }
+                  query: { params: [A] }
+                  reducer: { type: last, params: [] }
+                  type: query
+        noDataState: NoData
+        execErrState: Error
+        for: 0s
+        annotations:
+          summary: "Região {{ $labels.region }} com {{ $values.A.Value }} carrinhos abertos"
+          description: "Alerta de teste para validar a resolução de variáveis de template ({{ $labels.region }} / {{ $values.A.Value }}) no summary do card."
+          runbook_url: "https://wiki.example.com/runbooks/cart-volume"
+        labels:
+          severity: warning
+          team: ecommerce
