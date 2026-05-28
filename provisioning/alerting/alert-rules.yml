@@ -1,0 +1,147 @@
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: cart-alerts
+    folder: Cart Alerts
+    interval: 30s
+    rules:
+      - uid: cart-high-abandon-rate
+        title: Alta taxa de abandono de carrinho
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange: { from: 600, to: 0 }
+            datasourceUid: prom-cartalert
+            model:
+              expr: cart_abandoned_rate
+              refId: A
+              instant: true
+          - refId: C
+            relativeTimeRange: { from: 0, to: 0 }
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              refId: C
+              expression: A
+              conditions:
+                - evaluator: { type: gt, params: [0.6] }
+                  operator: { type: and }
+                  query: { params: [A] }
+                  reducer: { type: last, params: [] }
+                  type: query
+        noDataState: NoData
+        execErrState: Error
+        for: 30s
+        annotations:
+          summary: "Taxa de abandono de carrinho acima de 60%"
+          description: "A taxa de abandono está em níveis elevados, indicando possível problema no checkout ou promoção mal calibrada. Investigue funil e latência."
+          runbook_url: "https://wiki.example.com/runbooks/cart-abandon"
+        labels:
+          severity: critical
+          team: ecommerce
+
+      - uid: cart-checkout-latency
+        title: Latência de checkout alta
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange: { from: 600, to: 0 }
+            datasourceUid: prom-cartalert
+            model:
+              expr: checkout_latency_seconds
+              refId: A
+              instant: true
+          - refId: C
+            relativeTimeRange: { from: 0, to: 0 }
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              refId: C
+              expression: A
+              conditions:
+                - evaluator: { type: gt, params: [3] }
+                  operator: { type: and }
+                  query: { params: [A] }
+                  reducer: { type: last, params: [] }
+                  type: query
+        noDataState: NoData
+        execErrState: Error
+        for: 1m
+        annotations:
+          summary: "Latência de checkout maior que 3s"
+          description: "Checkout está lento para os usuários. Verifique dependências, banco de dados e tempo de resposta do gateway de pagamento."
+          runbook_url: "https://wiki.example.com/runbooks/checkout-latency"
+        labels:
+          severity: warning
+          team: ecommerce
+
+      - uid: cart-error-rate
+        title: Taxa de erro HTTP 5xx
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange: { from: 600, to: 0 }
+            datasourceUid: prom-cartalert
+            model:
+              expr: http_error_rate
+              refId: A
+              instant: true
+          - refId: C
+            relativeTimeRange: { from: 0, to: 0 }
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              refId: C
+              expression: A
+              conditions:
+                - evaluator: { type: gt, params: [0.1] }
+                  operator: { type: and }
+                  query: { params: [A] }
+                  reducer: { type: last, params: [] }
+                  type: query
+        noDataState: NoData
+        execErrState: Error
+        for: 30s
+        annotations:
+          summary: "Erros HTTP 5xx acima de 10%"
+          description: "Endpoint /checkout reportando alta taxa de 5xx. Verifique logs e o status das integrações externas."
+          runbook_url: "https://wiki.example.com/runbooks/http-errors"
+        labels:
+          severity: critical
+          team: platform
+
+      - uid: cart-open-volume
+        title: Volume de carrinhos abertos
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange: { from: 600, to: 0 }
+            datasourceUid: prom-cartalert
+            model:
+              expr: cart_open_total
+              refId: A
+              instant: true
+          - refId: C
+            relativeTimeRange: { from: 0, to: 0 }
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              refId: C
+              expression: A
+              conditions:
+                - evaluator: { type: gt, params: [220] }
+                  operator: { type: and }
+                  query: { params: [A] }
+                  reducer: { type: last, params: [] }
+                  type: query
+        noDataState: NoData
+        execErrState: Error
+        for: 30s
+        annotations:
+          summary: "Volume anormal de carrinhos abertos"
+          description: "Pode indicar bot, scraping ou problema no fluxo de finalização."
+          runbook_url: "https://wiki.example.com/runbooks/cart-volume"
+        labels:
+          severity: info
+          team: ecommerce

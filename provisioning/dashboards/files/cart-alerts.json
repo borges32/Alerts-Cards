@@ -1,0 +1,41 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "id": 1,
+      "type": "alerts-cards-panel",
+      "title": "Alertas do Cart",
+      "gridPos": { "h": 18, "w": 24, "x": 0, "y": 0 },
+      "options": {
+        "columns": 3,
+        "showExpression": true,
+        "labelFilter": "",
+        "colorFiring": "#E02F44",
+        "colorPending": "#FF9830",
+        "colorNormal": "#3BA55D",
+        "colorNoData": "#8E8E8E",
+        "colorError": "#7E2EC9",
+        "borderRadius": 12,
+        "gap": 16,
+        "compact": false
+      },
+      "targets": []
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["alerts"],
+  "templating": { "list": [] },
+  "time": { "from": "now-6h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Cart Alerts Overview",
+  "uid": "cart-alerts-overview",
+  "version": 1,
+  "weekStart": ""
+}
