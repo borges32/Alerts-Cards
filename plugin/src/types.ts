@@ -21,6 +21,11 @@ export interface AlertCardsOptions {
   showFooter: boolean;
   cardMaxHeight: number;
   cardMinHeight: number;
+  fileFilter: string;
+  matcherFilter: string;
+  limitAlerts: number;
+  subtitleAnnotations: string;
+  tooltipAnnotations: string;
 }
 
 export const defaultOptions: AlertCardsOptions = {
@@ -42,6 +47,11 @@ export const defaultOptions: AlertCardsOptions = {
   showFooter: true,
   cardMaxHeight: 220,
   cardMinHeight: 0,
+  fileFilter: '',
+  matcherFilter: '',
+  limitAlerts: 0,
+  subtitleAnnotations: 'summary',
+  tooltipAnnotations: 'description',
 };
 
 export interface AlertRule {

@@ -12,6 +12,8 @@ interface Props {
   compact: boolean;
   maxHeight: number;
   minHeight: number;
+  subtitleKeys: string[];
+  tooltipKeys: string[];
 }
 
 export const AlertCard: React.FC<Props> = ({
@@ -23,12 +25,28 @@ export const AlertCard: React.FC<Props> = ({
   compact,
   maxHeight,
   minHeight,
+  subtitleKeys,
+  tooltipKeys,
 }) => {
   const hasTemplate = (s?: string) => !!s && s.includes('{{');
-  const rawSummary = alert.annotations.summary;
-  const summary = rawSummary && !hasTemplate(rawSummary) ? rawSummary : alert.name;
-  const rawDescription = alert.annotations.description;
-  const description = rawDescription && !hasTemplate(rawDescription) ? rawDescription : 'Sem descrição disponível.';
+  const resolved = (key: string): string | undefined => {
+    const v = alert.annotations[key];
+    return v && !hasTemplate(v) ? v : undefined;
+  };
+
+  const subtitleLines = subtitleKeys.map(resolved).filter((v): v is string => !!v);
+  const tooltipLines = tooltipKeys.map(resolved).filter((v): v is string => !!v);
+  const tooltipContent =
+    tooltipLines.length > 0 ? (
+      <div>
+        {tooltipLines.map((line, i) => (
+          <div key={i}>{line}</div>
+        ))}
+      </div>
+    ) : (
+      'Sem informação disponível.'
+    );
+
   const runbookUrl = alert.annotations.runbook_url || alert.annotations.runbookUrl;
   const severity = alert.labels.severity;
 
@@ -40,10 +58,14 @@ export const AlertCard: React.FC<Props> = ({
 
       <div className={styles.header}>
         <div className={styles.titleWrap}>
-          <Tooltip content={description} placement="top">
+          <Tooltip content={tooltipContent} placement="top">
             <span className={styles.title}>{alert.name}</span>
           </Tooltip>
-          {summary !== alert.name && <span className={styles.summary}>{summary}</span>}
+          {subtitleLines.map((line, i) => (
+            <span key={i} className={styles.summary}>
+              {line}
+            </span>
+          ))}
           <div className={styles.meta}>
             <span className={styles.state}>{alert.state.toUpperCase()}</span>
             {severity && <span className={styles.badge}>{severity}</span>}

@@ -14,11 +14,45 @@ export const AlertCardsPanel: React.FC<Props> = ({ options, width, height }) => 
   const [rules, setRules] = useState<AlertRule[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const files = useMemo(
+    () =>
+      (options.fileFilter || '')
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean),
+    [options.fileFilter]
+  );
+  const parseKeys = (raw: string) =>
+    (raw || '')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+  const subtitleKeys = useMemo(() => parseKeys(options.subtitleAnnotations), [options.subtitleAnnotations]);
+  const tooltipKeys = useMemo(() => parseKeys(options.tooltipAnnotations), [options.tooltipAnnotations]);
+
+  const matchers = useMemo(
+    () =>
+      (options.matcherFilter || '')
+        .split(/\r?\n|;/)
+        .map((s) => s.trim())
+        .filter(Boolean),
+    [options.matcherFilter]
+  );
+  // Stable key for useEffect deps that depend on array contents
+  const statesKey = (options.stateFilter || []).slice().sort().join(',');
+  const filesKey = files.join(',');
+  const matchersKey = matchers.join('|');
+
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
       try {
-        const data = await fetchAlertRules();
+        const data = await fetchAlertRules({
+          states: options.stateFilter,
+          files,
+          matchers,
+          limitAlerts: options.limitAlerts,
+        });
         if (!cancelled) {
           setRules(data);
           setError(null);
@@ -35,7 +69,8 @@ export const AlertCardsPanel: React.FC<Props> = ({ options, width, height }) => 
       cancelled = true;
       window.clearInterval(id);
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statesKey, filesKey, matchersKey, options.limitAlerts]);
 
   const filtered = useMemo(() => {
     if (!rules) {
@@ -168,6 +203,8 @@ export const AlertCardsPanel: React.FC<Props> = ({ options, width, height }) => 
           compact={options.compact}
           maxHeight={options.cardMaxHeight}
           minHeight={options.cardMinHeight}
+          subtitleKeys={subtitleKeys}
+          tooltipKeys={tooltipKeys}
         />
       ))}
     </div>

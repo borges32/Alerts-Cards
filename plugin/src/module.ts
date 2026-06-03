@@ -66,6 +66,20 @@ export const plugin = new PanelPlugin<AlertCardsOptions>(AlertCardsPanel).setPan
       defaultValue: defaultOptions.showFooter,
       category: ['Conteúdo'],
     })
+    .addTextInput({
+      path: 'subtitleAnnotations',
+      name: 'Annotations no subtítulo',
+      description: 'Chaves de annotations separadas por vírgula, exibidas abaixo do título. Ex.: summary,impacted_service',
+      defaultValue: defaultOptions.subtitleAnnotations,
+      category: ['Conteúdo'],
+    })
+    .addTextInput({
+      path: 'tooltipAnnotations',
+      name: 'Annotations no tooltip',
+      description: 'Chaves de annotations separadas por vírgula, exibidas no tooltip ao passar o mouse sobre o título. Ex.: description,runbook_url',
+      defaultValue: defaultOptions.tooltipAnnotations,
+      category: ['Conteúdo'],
+    })
 
     // ---------- Filtros ----------
     .addMultiSelect({
@@ -108,6 +122,29 @@ export const plugin = new PanelPlugin<AlertCardsOptions>(AlertCardsPanel).setPan
       name: 'Ocultar quando vazio',
       description: 'Não renderiza placeholder caso o filtro não retorne alertas',
       defaultValue: defaultOptions.hideEmptyGroups,
+      category: ['Filtros'],
+    })
+    .addTextInput({
+      path: 'fileFilter',
+      name: 'Folders (server-side)',
+      description: 'Lista de folders separados por vírgula. Enviado como ?file= na API do Grafana para reduzir o payload.',
+      defaultValue: defaultOptions.fileFilter,
+      category: ['Filtros'],
+    })
+    .addTextInput({
+      path: 'matcherFilter',
+      name: 'Matchers de label (server-side)',
+      description: 'Um matcher por linha (ou separados por ";"). Ex.: {severity="critical"} — enviado como ?matcher= na API do Grafana.',
+      defaultValue: defaultOptions.matcherFilter,
+      settings: { useTextarea: true, rows: 3 },
+      category: ['Filtros'],
+    })
+    .addNumberInput({
+      path: 'limitAlerts',
+      name: 'Limite de alertas por regra',
+      description: '0 = sem limite. Enviado como ?limit_alerts= na API do Grafana.',
+      defaultValue: defaultOptions.limitAlerts,
+      settings: { min: 0, max: 10000, step: 10 },
       category: ['Filtros'],
     })
 
