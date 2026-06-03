@@ -157,12 +157,14 @@ export const AlertCardsPanel: React.FC<Props> = ({ options, width, height }) => 
     return <LoadingPlaceholder text="Carregando alertas..." />;
   }
   if (filtered.length === 0) {
-    if (options.hideEmptyGroups) {
+    const emptyMessage = options.emptyMessage?.trim();
+    // Mensagem custom tem prioridade; se vazia, respeita "Ocultar quando vazio".
+    if (!emptyMessage && options.hideEmptyGroups) {
       return null;
     }
     return (
       <div className={styles.empty}>
-        <span>Nenhum alerta encontrado.</span>
+        <span>{emptyMessage || 'Nenhum alerta encontrado.'}</span>
       </div>
     );
   }

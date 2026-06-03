@@ -26,6 +26,7 @@ export interface AlertCardsOptions {
   limitAlerts: number;
   subtitleAnnotations: string;
   tooltipAnnotations: string;
+  emptyMessage: string;
 }
 
 export const defaultOptions: AlertCardsOptions = {
@@ -52,6 +53,7 @@ export const defaultOptions: AlertCardsOptions = {
   limitAlerts: 0,
   subtitleAnnotations: 'summary',
   tooltipAnnotations: 'description',
+  emptyMessage: '',
 };
 
 export interface AlertRule {

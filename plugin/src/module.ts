@@ -125,6 +125,14 @@ export const plugin = new PanelPlugin<AlertCardsOptions>(AlertCardsPanel).setPan
       category: ['Filtros'],
     })
     .addTextInput({
+      path: 'emptyMessage',
+      name: 'Mensagem quando vazio',
+      description:
+        'Texto exibido quando nenhum alerta é retornado. Se preenchido, tem prioridade sobre "Ocultar quando vazio". Deixe em branco para usar o comportamento padrão.',
+      defaultValue: defaultOptions.emptyMessage,
+      category: ['Filtros'],
+    })
+    .addTextInput({
       path: 'fileFilter',
       name: 'Folders (server-side)',
       description: 'Lista de folders separados por vírgula. Enviado como ?file= na API do Grafana para reduzir o payload.',
